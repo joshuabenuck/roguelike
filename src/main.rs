@@ -1,10 +1,12 @@
 mod components;
 mod map;
 mod player;
+mod rect;
 
 use components::{Player, Position, Renderable};
-use map::{draw_map, new_map, xy_idx, TileType};
+use map::{draw_map, new_map_rooms_and_cooridors, xy_idx, TileType};
 use player::player_input;
+use rect::Rect;
 use rltk::{GameState, Rltk, RGB};
 use specs::prelude::*;
 
@@ -51,7 +53,7 @@ fn main() {
     gs.ecs.register::<Renderable>();
     gs.ecs.register::<Player>();
 
-    gs.ecs.insert(new_map());
+    gs.ecs.insert(new_map_rooms_and_cooridors());
 
     gs.ecs
         .create_entity()
