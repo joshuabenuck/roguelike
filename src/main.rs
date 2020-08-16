@@ -4,7 +4,7 @@ mod player;
 mod rect;
 
 use components::{Player, Position, Renderable};
-use map::{draw_map, new_map_rooms_and_cooridors, xy_idx, TileType};
+use map::{draw_map, Map, TileType};
 use player::player_input;
 use rect::Rect;
 use rltk::{GameState, Rltk, RGB};
@@ -27,8 +27,8 @@ impl GameState for State {
         player_input(self, ctx);
         self.run_systems();
 
-        let map = self.ecs.fetch::<Vec<TileType>>();
-        draw_map(&map, ctx);
+        let map = self.ecs.fetch::<Map>();
+        draw_map(&map.tiles, ctx);
 
         let positions = self.ecs.read_storage::<Position>();
         let renderables = self.ecs.read_storage::<Renderable>();
@@ -53,9 +53,9 @@ fn main() {
     gs.ecs.register::<Renderable>();
     gs.ecs.register::<Player>();
 
-    let (rooms, map) = new_map_rooms_and_cooridors();
+    let map = Map::new_map_rooms_and_cooridors();
+    let (player_x, player_y) = map.rooms[0].center();
     gs.ecs.insert(map);
-    let (player_x, player_y) = rooms[0].center();
 
     gs.ecs
         .create_entity()
